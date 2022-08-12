@@ -1,4 +1,5 @@
 import React from "react";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import Footer from "./Footer.js";
 import Header from "./Header.js";
 import Main from "./Main.js";
@@ -9,6 +10,8 @@ import EditAvatarPopup from "./EditAvatarPopup.js";
 import AddPlacePopup from "./AddPlacePopup.js";
 import api from "../Utils/api.js";
 import { CurrentUserContext } from "../context/CurrentUserContext.js";
+import Login from "./Login.js";
+import Register from "./Register.js";
 
 function App() {
   const [buttonText, setButtonText] = React.useState("Сохранить");
@@ -30,6 +33,8 @@ function App() {
   function handleCardClick(card) {
     setSelectedCard(card);
   }
+
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
     api
@@ -120,15 +125,25 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <Header />
-        <Main
-          onEditAvatar={handleEditAvatarClick}
-          onEditProfile={handleEditProfilePopupOpen}
-          onAddPlace={handleAddPlacePopupOpen}
-          onCardClick={handleCardClick}
-          cards={cards}
-          onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
-        />
+        <Switch>
+          <Route path="/sign-up">
+            <Register />
+          </Route>
+          <Route path="/sign-in">
+            <Login />
+          </Route>
+          <Route exact path="/">
+            <Main
+              onEditAvatar={handleEditAvatarClick}
+              onEditProfile={handleEditProfilePopupOpen}
+              onAddPlace={handleAddPlacePopupOpen}
+              onCardClick={handleCardClick}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDelete={handleCardDelete}
+            />
+          </Route>
+        </Switch>
 
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
@@ -151,12 +166,9 @@ function App() {
           buttonText={buttonText}
         />
 
-        <ImagePopup 
-          card={selectedCard} 
-          onClose={closeAllPopups} 
-          buttonText={buttonText} 
-        />
+        <ImagePopup card={selectedCard} onClose={closeAllPopups} buttonText={buttonText} />
 
+        {/* Еще не реализован */}
         <PopupWithForm title="Вы уверены?" name="remove" buttonText="Да"></PopupWithForm>
 
         <Footer />
@@ -166,6 +178,16 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
+
+
+
+
+
 
 
 
