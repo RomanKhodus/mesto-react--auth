@@ -19,7 +19,6 @@ export const register = (email, password) => {
       }
     })
     .then((data) => {
-      debugger;
       return data;
     })
     .catch((err) => console.log(err));
