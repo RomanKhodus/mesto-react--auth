@@ -117,7 +117,6 @@ function App() {
   }
 
   function handleUpdateUser(user) {
-    // setButtonText("Думаю...");
     isLoading(true);
     api
       .setUserInfo(user)
@@ -127,7 +126,6 @@ function App() {
       })
       .catch((err) => console.log(`Ошибка: ${err.status}`))
       .finally(() => {
-        // setButtonText("Сохранить");
         isLoading(false);
       });
   }
