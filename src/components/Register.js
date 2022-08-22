@@ -3,7 +3,6 @@ import SigningForm from "./SigningForm";
 
 function Register({ onRegistration, register, isLoading }) {
   const [email, setEmail] = React.useState("");
-  // const [buttonText, setButtonText] = React.useState("Зарегистрироваться");
 
   const handleSetEmail = (e) => {
     setEmail(e.target.value);
@@ -16,7 +15,6 @@ function Register({ onRegistration, register, isLoading }) {
 
   function onRegister(e) {
     e.preventDefault();
-    // setButtonText("...Регистрирую");
     onRegistration();
     register(email, password);
   }
@@ -30,23 +28,21 @@ function Register({ onRegistration, register, isLoading }) {
     >
       <input
         type="email"
-        // id="avatar-link-input"
+        // id=""
         className="signing__input"
         name="email"
         onChange={handleSetEmail}
         value={email}
-        // ref={avatarRef}
         placeholder="Email"
         required
       />
       <input
         type="password"
-        // id="avatar-link-input"
+        // id=""
         className="signing__input"
         value={password}
         name="password"
         onChange={handleSetPassword}
-        // ref={avatarRef}
         placeholder="Пароль"
         required
       />

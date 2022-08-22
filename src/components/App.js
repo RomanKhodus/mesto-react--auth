@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, Redirect, withRouter, useHistory } from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import Footer from "./Footer.js";
 import Header from "./Header.js";
 import Main from "./Main.js";
@@ -23,11 +23,10 @@ function App() {
   function handleEmailchange(email) {
     setEmail(email);
   }
-  const [isLoading, setIsLoading]=React.useState(false); //Универсальная реализация состояния загрузки вместо buttonText, можно передавать в любой компонент для настройки
+  const [isLoading, setIsLoading] = React.useState(false); //Универсальная реализация состояния загрузки вместо buttonText, можно передавать в любой компонент для настройки
 
   const [password, setPassword] = React.useState("");
   const [loggedIn, setLoggedIn] = React.useState(false);
-  const [buttonText, setButtonText] = React.useState("Сохранить");
   const [cards, setCards] = React.useState([]);
   const [currentUser, setCurrentUser] = React.useState({});
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
@@ -117,7 +116,7 @@ function App() {
   }
 
   function handleUpdateUser(user) {
-    isLoading(true);
+    setIsLoading(true);
     api
       .setUserInfo(user)
       .then((res) => {
@@ -126,12 +125,13 @@ function App() {
       })
       .catch((err) => console.log(`Ошибка: ${err.status}`))
       .finally(() => {
-        isLoading(false);
+        setIsLoading(false);
       });
   }
 
   function handleUpdateAvatar({ avatar }) {
-    setButtonText("Думаю...");
+    // setButtonText("Думаю...");
+    setIsLoading(true);
     api
       .setAvatar(avatar)
       .then((res) => {
@@ -140,12 +140,14 @@ function App() {
       })
       .catch((err) => console.log(`Ошибка: ${err.status}`))
       .finally(() => {
-        setButtonText("Сохранить");
+        // setButtonText("Сохранить");
+        setIsLoading(false);
       });
   }
 
   function handleAddPlaceSubmit(cardData) {
-    setButtonText("Думаю...");
+    // setButtonText("Думаю...");
+    setIsLoading(true);
     api
       .setNewCard(cardData)
       .then((newCard) => {
@@ -154,7 +156,8 @@ function App() {
       })
       .catch((err) => console.log(`Ошибка: ${err.status}`))
       .finally(() => {
-        setButtonText("Сохранить");
+        // setButtonText("Сохранить");
+        setIsLoading(false);
       });
   }
 
@@ -195,7 +198,6 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <Header email={email} handleEmailchange={handleEmailchange} />
-
         <Switch>
           <ProtectedRoute
             exact
@@ -215,51 +217,43 @@ function App() {
           </Route>
 
           <Route exact path="/sign-up">
-            <Register 
-            onRegistration={handleInfoTooltipOpen} 
-            register={handleRegister}
-            isLoading={isLoading}
-             />
+            <Register
+              onRegistration={handleInfoTooltipOpen}
+              register={handleRegister}
+              isLoading={isLoading}
+            />
           </Route>
 
           <Route exact path="/sign-in">
-            <Login handleEmailchange={handleEmailchange} authorize={handleAuthorize} isLoading={isLoading} />
+            <Login
+              handleEmailchange={handleEmailchange}
+              authorize={handleAuthorize}
+              isLoading={isLoading}
+            />
           </Route>
         </Switch>
-
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
-          buttonText={buttonText}
+          isLoading={isLoading}
         />
-
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
-          buttonText={buttonText}
+          isLoading={isLoading}
         />
-
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onAddPlace={handleAddPlaceSubmit}
-          buttonText={buttonText}
+          isLoading={isLoading}
         />
-
-        <ImagePopup 
-        card={selectedCard} 
-        onClose={closeAllPopups} 
-        buttonText={buttonText}
-        />
-
+        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopups} isSuccess={isSuccess} />
-
         {/* Еще не реализован */}
-        <PopupWithForm title="Вы уверены?" name="remove" buttonText="Да"></PopupWithForm> {/*Еще не реализован */}
-
-        <Footer />
+        <PopupWithForm title="Вы уверены?" name="remove" buttonText="Да"></PopupWithForm> <Footer />
       </div>
     </CurrentUserContext.Provider>
   );

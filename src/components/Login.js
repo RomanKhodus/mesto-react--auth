@@ -2,9 +2,6 @@ import React from "react";
 import SigningForm from "./SigningForm";
 
 function Login({ handleEmailchange, authorize, isLoading }) {
-
-  // const [buttonText, setButtonText] = React.useState("Вход");
-
   const [email, setEmail] = React.useState("");
   const handleSetEmail = (e) => {
     setEmail(e.target.value);
