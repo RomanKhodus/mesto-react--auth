@@ -1,13 +1,9 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
 import SigningForm from "./SigningForm";
-import * as Auth from "./Auth.js";
 
-function Register({ onRegistration, isSuccess }) {
-  const history = useHistory();
-
+function Register({ onRegistration, register, isLoading }) {
   const [email, setEmail] = React.useState("");
-  const [buttonText, setButtonText] = React.useState("Зарегистрироваться");
+  // const [buttonText, setButtonText] = React.useState("Зарегистрироваться");
 
   const handleSetEmail = (e) => {
     setEmail(e.target.value);
@@ -20,24 +16,18 @@ function Register({ onRegistration, isSuccess }) {
 
   function onRegister(e) {
     e.preventDefault();
-    setButtonText("...Регистрирую");
+    // setButtonText("...Регистрирую");
     onRegistration();
-    Auth.register(email, password)
-      .then((res) => {
-        if (res) {
-          isSuccess(true);
-          history.push("/sign-in");
-        }
-      })
-      .catch((err) => {
-        isSuccess(false);
-        console.log(`Ошибка: ${err.status}`);
-      })
-      .finally(() => setButtonText("Зарегистрироваться"));
+    register(email, password);
   }
 
   return (
-    <SigningForm title="Регистрация" buttonText={buttonText} onSubmit={onRegister}>
+    <SigningForm
+      title="Регистрация"
+      disabled={isLoading}
+      buttonText={isLoading ? "..Регистрирую" : "Зарегистрироваться"}
+      onSubmit={onRegister}
+    >
       <input
         type="email"
         // id="avatar-link-input"

@@ -13,7 +13,7 @@ import { CurrentUserContext } from "../context/CurrentUserContext.js";
 import Login from "./Login.js";
 import Register from "./Register.js";
 import InfoTooltip from "./InfoTooltip.js";
-import * as Auth from "./Auth.js";
+import * as Auth from "../Utils/Auth.js";
 import ProtectedRoute from "./ProtectedRoute.js";
 
 function App() {
@@ -23,14 +23,15 @@ function App() {
   function handleEmailchange(email) {
     setEmail(email);
   }
+  const [isLoading, setIsLoading]=React.useState(false); //Универсальная реализация состояния загрузки вместо buttonText, можно передавать в любой компонент для настройки
+
+  const [password, setPassword] = React.useState("");
+  const [loggedIn, setLoggedIn] = React.useState(false);
   const [buttonText, setButtonText] = React.useState("Сохранить");
   const [cards, setCards] = React.useState([]);
   const [currentUser, setCurrentUser] = React.useState({});
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(true);
-  function handleSetIsSuccess(status) {
-    setIsSuccess(status);
-  }
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -52,13 +53,9 @@ function App() {
     setSelectedCard(card);
   }
 
-  const [loggedIn, setLoggedIn] = React.useState(false);
-  function handleLogin(state) {
-    setLoggedIn(state);
-  }
-
-  // Проверка токена
   React.useEffect(() => {
+    // проверка токена
+
     if (localStorage.getItem("jwt")) {
       const jwt = localStorage.getItem("jwt");
       if (jwt) {
@@ -71,10 +68,9 @@ function App() {
         });
       }
     }
-  }, [email]);
 
-  // Получение начальных данных
-  React.useEffect(() => {
+    // Получение начальных данных
+
     api
       .getInitialCards()
       .then((res) => {
@@ -121,7 +117,8 @@ function App() {
   }
 
   function handleUpdateUser(user) {
-    setButtonText("Думаю...");
+    // setButtonText("Думаю...");
+    isLoading(true);
     api
       .setUserInfo(user)
       .then((res) => {
@@ -130,7 +127,8 @@ function App() {
       })
       .catch((err) => console.log(`Ошибка: ${err.status}`))
       .finally(() => {
-        setButtonText("Сохранить");
+        // setButtonText("Сохранить");
+        isLoading(false);
       });
   }
 
@@ -162,6 +160,39 @@ function App() {
       });
   }
 
+  function handleAuthorize(email, password) {
+    setIsLoading(true);
+    Auth.authorize(email, password)
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem("jwt", data.token);
+          setLoggedIn(true);
+          setPassword("");
+          history.push("/");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => setIsLoading(false));
+  }
+
+  function handleRegister(email, password) {
+    setIsLoading(true);
+    Auth.register(email, password)
+      .then((res) => {
+        if (res) {
+          setIsSuccess(true);
+          history.push("/sign-in");
+        }
+      })
+      .catch((err) => {
+        setIsSuccess(false);
+        console.log(`Ошибка: ${err.status}`);
+      })
+      .finally(() => setIsLoading(false));
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
@@ -186,15 +217,15 @@ function App() {
           </Route>
 
           <Route exact path="/sign-up">
-            <>
-              <Register isSuccess={handleSetIsSuccess} onRegistration={handleInfoTooltipOpen} />
-            </>
+            <Register 
+            onRegistration={handleInfoTooltipOpen} 
+            register={handleRegister}
+            isLoading={isLoading}
+             />
           </Route>
 
           <Route exact path="/sign-in">
-            <>
-              <Login handleLogin={handleLogin} handleEmailchange={handleEmailchange} />
-            </>
+            <Login handleEmailchange={handleEmailchange} authorize={handleAuthorize} isLoading={isLoading} />
           </Route>
         </Switch>
 
@@ -219,12 +250,16 @@ function App() {
           buttonText={buttonText}
         />
 
-        <ImagePopup card={selectedCard} onClose={closeAllPopups} buttonText={buttonText} />
+        <ImagePopup 
+        card={selectedCard} 
+        onClose={closeAllPopups} 
+        buttonText={buttonText}
+        />
 
         <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopups} isSuccess={isSuccess} />
 
         {/* Еще не реализован */}
-        <PopupWithForm title="Вы уверены?" name="remove" buttonText="Да"></PopupWithForm>
+        <PopupWithForm title="Вы уверены?" name="remove" buttonText="Да"></PopupWithForm> {/*Еще не реализован */}
 
         <Footer />
       </div>
@@ -233,4 +268,3 @@ function App() {
 }
 
 export default App;
-

@@ -1,12 +1,9 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
 import SigningForm from "./SigningForm";
-import * as Auth from "./Auth.js";
 
-function Login({ handleLogin, handleEmailchange }) {
-  const history = useHistory();
+function Login({ handleEmailchange, authorize, isLoading }) {
 
-  const [buttonText, setButtonText] = React.useState("Вход");
+  // const [buttonText, setButtonText] = React.useState("Вход");
 
   const [email, setEmail] = React.useState("");
   const handleSetEmail = (e) => {
@@ -20,27 +17,19 @@ function Login({ handleLogin, handleEmailchange }) {
 
   function onLogin(e) {
     e.preventDefault();
-    setButtonText("...Думаю");
-    Auth.authorize(email, password)
-      .then((data) => {
-        if (data.token) {
-          handleLogin(true);
-          setEmail("");
-          setPassword("");
-          history.push("/");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => setButtonText("Войти"));
+    authorize(email, password);
   }
 
   return (
-    <SigningForm title="Вход" buttonText={buttonText} onSubmit={onLogin}>
+    <SigningForm
+      title="Вход"
+      disabled={isLoading}
+      buttonText={isLoading ? "...Загружаю" : "Войти"}
+      onSubmit={onLogin}
+    >
       <input
         type="email"
-        // id="avatar-link-input"
+        // id=""
         className="signing__input"
         name="email"
         value={email}
@@ -50,7 +39,7 @@ function Login({ handleLogin, handleEmailchange }) {
       />
       <input
         type="password"
-        // id="avatar-link-input"
+        // id=""
         className="signing__input"
         name="password"
         value={password}
