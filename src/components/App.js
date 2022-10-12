@@ -53,7 +53,7 @@ function App() {
   }
 
   React.useEffect(() => {
-    // проверка токена
+    // проверка токена и переход на главную если токен нашелся в куках
 
     if (localStorage.getItem("jwt")) {
       const jwt = localStorage.getItem("jwt");
@@ -84,6 +84,20 @@ function App() {
       })
       .catch((err) => console.log(`Ошибка: ${err.status}`));
   }, []);
+
+  React.useEffect(() => {
+    document.addEventListener("keydown", escFunction);
+
+    return () => {
+      document.removeEventListener("keydown", escFunction);
+    };
+  }, []);
+
+  function escFunction(event) {
+    if (event.keyCode === 27) {
+      closeAllPopups();
+    }
+  }
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -130,7 +144,6 @@ function App() {
   }
 
   function handleUpdateAvatar({ avatar }) {
-    // setButtonText("Думаю...");
     setIsLoading(true);
     api
       .setAvatar(avatar)
@@ -184,7 +197,7 @@ function App() {
       .then((res) => {
         if (res) {
           setIsSuccess(true);
-          history.push("/sign-in");
+          history.push("/signin");
         }
       })
       .catch((err) => {
@@ -213,10 +226,10 @@ function App() {
             onCardDelete={handleCardDelete}
           />
           <Route exact path="/">
-            {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+            {loggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
           </Route>
 
-          <Route exact path="/sign-up">
+          <Route exact path="/signup">
             <Register
               onRegistration={handleInfoTooltipOpen}
               register={handleRegister}
@@ -224,7 +237,7 @@ function App() {
             />
           </Route>
 
-          <Route exact path="/sign-in">
+          <Route exact path="/signin">
             <Login
               handleEmailchange={handleEmailchange}
               authorize={handleAuthorize}
