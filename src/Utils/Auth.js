@@ -1,4 +1,4 @@
-export const BASE_URL = "api.place.students.nomoredomains.icu";
+export const BASE_URL = "place.students.nomoredomains.icu";
 
 export const register = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {
@@ -19,6 +19,7 @@ export const register = (email, password) => {
       }
     })
     .then((data) => {
+      console.log({ data: data });
       return data;
     })
     .catch((err) => console.log(err));

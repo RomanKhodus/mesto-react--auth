@@ -213,8 +213,7 @@ function App() {
         <Header email={email} handleEmailchange={handleEmailchange} />
         <Switch>
           <ProtectedRoute
-            exact
-            path="/"
+            exact path="/"
             component={Main}
             loggedIn={loggedIn}
             onEditAvatar={handleEditAvatarClick}
