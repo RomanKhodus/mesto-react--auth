@@ -53,7 +53,7 @@ function App() {
   }
 
   React.useEffect(() => {
-    // проверка токена и переход на главную если токен нашелся в куках
+    // проверка токена
 
     if (localStorage.getItem("jwt")) {
       const jwt = localStorage.getItem("jwt");
@@ -84,20 +84,6 @@ function App() {
       })
       .catch((err) => console.log(`Ошибка: ${err.status}`));
   }, []);
-
-  React.useEffect(() => {
-    document.addEventListener("keydown", escFunction);
-
-    return () => {
-      document.removeEventListener("keydown", escFunction);
-    };
-  }, []);
-
-  function escFunction(event) {
-    if (event.keyCode === 27) {
-      closeAllPopups();
-    }
-  }
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
@@ -144,6 +130,7 @@ function App() {
   }
 
   function handleUpdateAvatar({ avatar }) {
+    // setButtonText("Думаю...");
     setIsLoading(true);
     api
       .setAvatar(avatar)
@@ -197,7 +184,7 @@ function App() {
       .then((res) => {
         if (res) {
           setIsSuccess(true);
-          history.push("/signin");
+          history.push("/sign-in");
         }
       })
       .catch((err) => {
@@ -213,7 +200,8 @@ function App() {
         <Header email={email} handleEmailchange={handleEmailchange} />
         <Switch>
           <ProtectedRoute
-            exact path="/"
+            exact
+            path="/"
             component={Main}
             loggedIn={loggedIn}
             onEditAvatar={handleEditAvatarClick}
@@ -225,10 +213,10 @@ function App() {
             onCardDelete={handleCardDelete}
           />
           <Route exact path="/">
-            {loggedIn ? <Redirect to="/" /> : <Redirect to="/signin" />}
+            {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
           </Route>
 
-          <Route exact path="/signup">
+          <Route exact path="/sign-up">
             <Register
               onRegistration={handleInfoTooltipOpen}
               register={handleRegister}
@@ -236,7 +224,7 @@ function App() {
             />
           </Route>
 
-          <Route exact path="/signin">
+          <Route exact path="/sign-in">
             <Login
               handleEmailchange={handleEmailchange}
               authorize={handleAuthorize}

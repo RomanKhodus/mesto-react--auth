@@ -8,8 +8,8 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, isLoading }) {
     avatarRef.current.value = "";
   }, [isOpen]);
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  function handleSubmit(e) {
+    e.preventDefault();
     onUpdateAvatar({
       avatar: avatarRef.current.value,
     });

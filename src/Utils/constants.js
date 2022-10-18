@@ -11,9 +11,9 @@ export const options = {
 };
 
 export const API_CONFIG = {
-  baseUrl: 'https://place.students.nomoredomains.icu',
+  baseUrl: "https://nomoreparties.co/v1/cohort-44",
   headers: {
-    authorization: localStorage.getItem('jwt'),
+    authorization: "d4e0a88c-5fa2-48db-8833-e95cc8b3f3cb",
     "Content-Type": "application/json",
   },
 };
