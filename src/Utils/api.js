@@ -4,6 +4,7 @@ class Api {
   constructor(options) {
     this.baseUrl = options.baseUrl;
     this.headers = options.headers;
+    this.credential = options.credential;
   }
 
   _checkResponse(res) {
@@ -14,9 +15,11 @@ class Api {
   }
 
   getInitialCards() {
+    console.log(this.headers);
     return fetch(`${this.baseUrl}/cards`, {
       method: "GET",
       headers: this.headers,
+      // credential: this.credential,
     }).then(res => this._checkResponse(res));
   }
 

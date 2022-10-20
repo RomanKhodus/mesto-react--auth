@@ -11,11 +11,13 @@ export const options = {
 };
 
 export const API_CONFIG = {
-  baseUrl: "https://nomoreparties.co/v1/cohort-44",
+  baseUrl: "https://api.place.students.nomoredomains.icu",
   headers: {
-    authorization: "d4e0a88c-5fa2-48db-8833-e95cc8b3f3cb",
+    Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+    Accept: "application/json",
     "Content-Type": "application/json",
   },
+  // Credential: "include",
 };
 
 

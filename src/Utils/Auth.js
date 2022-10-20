@@ -1,11 +1,13 @@
-export const BASE_URL = "https://auth.nomoreparties.co";
+export const BASE_URL = "https://api.place.students.nomoredomains.icu";
 
 export const register = (email, password) => {
+  console.log(localStorage.getItem('jwt'));
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      // Authorization: `Bearer ${localStorage.getItem('jwt')}`,
     },
     body: JSON.stringify({ email, password }),
   })
@@ -30,6 +32,8 @@ export const authorize = (email, password) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
+      // Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+      // Credential: "include",
     },
     body: JSON.stringify({ email, password }),
   })

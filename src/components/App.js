@@ -23,8 +23,8 @@ function App() {
   function handleEmailchange(email) {
     setEmail(email);
   }
+  // const [isLogin, setLogin] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false); //Универсальная реализация состояния загрузки вместо buttonText, можно передавать в любой компонент для настройки
-
   const [password, setPassword] = React.useState("");
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [cards, setCards] = React.useState([]);
@@ -54,39 +54,41 @@ function App() {
 
   React.useEffect(() => {
     // проверка токена
-
     if (localStorage.getItem("jwt")) {
       const jwt = localStorage.getItem("jwt");
-      if (jwt) {
-        Auth.getContent(jwt).then((res) => {
-          if (res) {
-            setEmail(res.data.email);
+   
+        Auth.getContent(jwt).then((user) => {
+          if (user) {
+            setEmail(user.email);
             setLoggedIn(true);
             history.push("/");
           }
         });
-      }
     }
-
     // Получение начальных данных
+    console.log(loggedIn);
+    if (loggedIn){
+        api
+        .getInitialCards()
+        .then((res) => {
+          setCards(res);
+        })
+        .catch((err) => console.log(`Ошибка: ${err.status}`));
 
-    api
-      .getInitialCards()
-      .then((res) => {
-        setCards(res);
-      })
-      .catch((err) => console.log(`Ошибка: ${err.status}`));
-
-    api
-      .getUserInfo()
-      .then((res) => {
-        setCurrentUser(res);
-      })
-      .catch((err) => console.log(`Ошибка: ${err.status}`));
-  }, []);
+      api
+        .getUserInfo()
+        .then((res) => {
+          setCurrentUser(res);
+        })
+        .catch((err) => console.log(`Ошибка: ${err.status}`));
+      }
+      console.log("Отработал api");
+  }, [loggedIn]);
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    // console.log({userId: currentUser._id});
+    
+    const isLiked = card.likes.some((i) => i === currentUser._id);
 
     api
       .changeLikeCardStatus(card._id, isLiked)
@@ -115,12 +117,12 @@ function App() {
     setSelectedCard({ name: "", link: "" });
   }
 
-  function handleUpdateUser(user) {
+  function handleUpdateUser({name, about}) {
     setIsLoading(true);
     api
-      .setUserInfo(user)
+      .setUserInfo({name, about})
       .then((res) => {
-        setCurrentUser(res);
+        setCurrentUser(res.user);
         closeAllPopups();
       })
       .catch((err) => console.log(`Ошибка: ${err.status}`))
@@ -135,7 +137,7 @@ function App() {
     api
       .setAvatar(avatar)
       .then((res) => {
-        setCurrentUser(res);
+        setCurrentUser(res.user);
         closeAllPopups();
       })
       .catch((err) => console.log(`Ошибка: ${err.status}`))
