@@ -32,7 +32,7 @@ export const authorize = (email, password) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      // Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+      Authorization: `Bearer ${localStorage.getItem('jwt')}`,
       // Credential: "include",
     },
     body: JSON.stringify({ email, password }),

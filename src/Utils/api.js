@@ -4,7 +4,7 @@ class Api {
   constructor(options) {
     this.baseUrl = options.baseUrl;
     this.headers = options.headers;
-    this.credential = options.credential;
+    // this.credential = options.credential;
   }
 
   _checkResponse(res) {
@@ -15,10 +15,13 @@ class Api {
   }
 
   getInitialCards() {
-    console.log(this.headers);
     return fetch(`${this.baseUrl}/cards`, {
       method: "GET",
-      headers: this.headers,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
       // credential: this.credential,
     }).then(res => this._checkResponse(res));
   }
@@ -26,7 +29,11 @@ class Api {
   getUserInfo() {
     return fetch(`${this.baseUrl}/users/me`, {
       method: "GET",
-      headers: this.headers,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
     }).then((res) => {
       return this._checkResponse(res);
     });
@@ -35,7 +42,11 @@ class Api {
   setUserInfo(user) {
     return fetch(`${this.baseUrl}/users/me`, {
       method: "PATCH",
-      headers: this.headers,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         name: user.name,
         about: user.about,
@@ -48,7 +59,11 @@ class Api {
   setNewCard(cardData) {
     return fetch(`${this.baseUrl}/cards`, {
       method: "POST",
-      headers: this.headers,
+      headers: {
+    Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
       body: JSON.stringify({
         name: cardData.name,
         link: cardData.link,
@@ -61,7 +76,11 @@ class Api {
   deleteCard(cardId) {
     return fetch(`${this.baseUrl}/cards/${cardId}`, {
       method: "DELETE",
-      headers: this.headers,
+      headers: {
+    Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
     }).then((res) => {
       return this._checkResponse(res);
     });
@@ -71,14 +90,22 @@ class Api {
     if (isLiked) {
       return fetch(`${this.baseUrl}/cards/${cardId}/likes`, {
         method: "DELETE",
-        headers: this.headers,
+        headers: {
+    Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
       }).then((res) => {
         return this._checkResponse(res);
       });
     } else {
       return fetch(`${this.baseUrl}/cards/${cardId}/likes`, {
         method: "PUT",
-        headers: this.headers,
+        headers: {
+    Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
       }).then((res) => {
         return this._checkResponse(res);
       });
@@ -88,7 +115,11 @@ class Api {
   setAvatar(link) {
     return fetch(`${this.baseUrl}/users/me/avatar`, {
       method: "PATCH",
-      headers: this.headers,
+      headers: {
+    Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
       body: JSON.stringify({ avatar: link }),
     }).then((res) => {
       return this._checkResponse(res);

@@ -66,7 +66,6 @@ function App() {
         });
     }
     // Получение начальных данных
-    console.log(loggedIn);
     if (loggedIn){
         api
         .getInitialCards()
@@ -77,12 +76,11 @@ function App() {
 
       api
         .getUserInfo()
-        .then((res) => {
-          setCurrentUser(res);
+        .then((user) => {
+          setCurrentUser(user);
         })
         .catch((err) => console.log(`Ошибка: ${err.status}`));
       }
-      console.log("Отработал api");
   }, [loggedIn]);
 
   function handleCardLike(card) {
@@ -185,6 +183,7 @@ function App() {
     Auth.register(email, password)
       .then((res) => {
         if (res) {
+          console.log(res);
           setIsSuccess(true);
           history.push("/sign-in");
         }
